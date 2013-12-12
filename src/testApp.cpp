@@ -350,26 +350,26 @@ void testApp::setupBoundary()
 	ofPoint dimens;
 	boundsWidth = 40.;	//Inner Space
 	float hwidth = boundsWidth*0.5;
-	float depth = 2.;	//Wall Thickness
+	float depth = 4.;	//Wall Thickness
 	float hdepth = depth*.5;
 
 	for(int i = 0; i < 6; i++) {
 		bounds.push_back( new ofxBulletBox() );
 		if(i == 0) { //Ground
 			startLoc.set( 0., hwidth+hdepth, 0. );
-			dimens.set(boundsWidth, depth, boundsWidth);
+			dimens.set(boundsWidth, depth, boundsWidth*4);
 		} else if (i == 1) { //Back Wall
-			startLoc.set(0, 0, hwidth+hdepth);
+			startLoc.set(0, 0, (hwidth+hdepth)*4);
 			dimens.set(boundsWidth, boundsWidth, depth);
 		} else if (i == 2) { //Right Wall
 			startLoc.set(hwidth+hdepth, 0, 0.);
-			dimens.set(depth, boundsWidth, boundsWidth);
+			dimens.set(depth, boundsWidth, boundsWidth*4);
 		} else if (i == 3) { //Left Wall
 			startLoc.set(-hwidth-hdepth, 0, 0.);
-			dimens.set(depth, boundsWidth, boundsWidth);
+			dimens.set(depth, boundsWidth, boundsWidth*4);
 		} else if (i == 4) { //Ceiling
 			startLoc.set(0, -hwidth-hdepth, 0.);
-			dimens.set(boundsWidth, depth, boundsWidth);
+			dimens.set(boundsWidth, depth, boundsWidth*4);
 		} else if (i == 5) { //Front Wall
 			startLoc.set(0, 0, -hwidth-hdepth);
 			dimens.set(boundsWidth, boundsWidth, depth);
@@ -380,5 +380,4 @@ void testApp::setupBoundary()
 		bounds[i]->add();
 	}
 }
-
 //--------------------------------------------------------------
