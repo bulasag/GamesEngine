@@ -42,7 +42,7 @@ public:
 	int							mouseZ;
 	
 	bool						modeToggled;
-	bool						forceApplied;
+	bool						pullForce;
 	bool						spacebarHeld;
 	
 	ofCamera					camera;

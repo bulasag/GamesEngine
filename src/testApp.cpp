@@ -30,7 +30,7 @@ void testApp::setup() {
 	mousePickIndex	= -1;
 	mouseZ = 10;
 	modeToggled	= true;
-	forceApplied = true;
+	pullForce = true;
 	spacebarHeld = false;
 
 	//KtB Setup
@@ -59,7 +59,7 @@ void testApp::update() {
 		{
 			shapeToCursorDistance = mouseLoc - shapes[i]->getPosition();
 			shapeToCursorDistance *= 2.f;
-			if (!forceApplied) shapeToCursorDistance *= -1.f;
+			if (!pullForce) shapeToCursorDistance *= -1.f;
 			shapes[i]->applyCentralForce(shapeToCursorDistance);
 		}
 	}
@@ -99,17 +99,27 @@ void testApp::draw() {
 		//Draw spawned shapes
 		ofFill();
 		for(int i = 0; i < shapes.size(); i++) {
-			if(shapes[i]->getType() == ofxBulletBaseShape::OFX_BULLET_BOX_SHAPE) {
+			if(shapes[i]->getType() == ofxBulletBaseShape::OFX_BULLET_BOX_SHAPE)
+			{
 				ofSetColor(ofColor::dimGray);
-			} else {
+			}
+			else
+			{
 				ofSetColor(ofColor::gray);
 			}
-			if(mousePickIndex == i) {
+
+			if(mousePickIndex == i)
+			{
 				ofSetColor(255, 0, 0);
-			} else if (bColliding[i] == true) {
-				if(shapes[i]->getType() == ofxBulletBaseShape::OFX_BULLET_BOX_SHAPE) {
+			}
+			else if (bColliding[i] == true)
+			{
+				if(shapes[i]->getType() == ofxBulletBaseShape::OFX_BULLET_BOX_SHAPE)
+				{
 					ofSetColor(ofColor::gold);
-				} else {
+				}
+				else
+				{
 					ofSetColor(ofColor::orangeRed);
 				}
 			}
@@ -196,7 +206,7 @@ void testApp::keyPressed(int key) {
 	}
 	if(key == 'f')	//Toggle between force modes
 	{
-		forceApplied = !forceApplied;
+		pullForce = !pullForce;
 	}
 	if(key == 't')	//Move MouseZ away from camera
 	{
@@ -211,10 +221,6 @@ void testApp::keyPressed(int key) {
 		{
 			mouseZ -= 10;
 		}
-	}
-	if(key == 'q')	//KABOOM
-	{
-		mouseZ = 40;
 	}
 	
 
@@ -269,6 +275,18 @@ void testApp::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){
+	//Blast
+	ofVec3f blast = ofVec3f(0.f,0.f,20.f);
+	ofVec3f mousePos = ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), (float)mouseZ);
+
+	for(int i = 0; i < shapes.size(); i++)
+	{
+		if(mousePickIndex == i)
+		{
+			shapes[i]->applyForce(blast, mousePos);
+		}
+	}
+
     mousePickIndex = -1;
 }
 
@@ -303,7 +321,7 @@ void testApp::userInterface()
 	ss << "No. of Shapes: " << (shapes.size()) << endl;
 	ss << "Q+AA / GravityWell Mode (R): " << ofToString(modeToggled, 0) << endl;
 	ss << "Mouse Force (Spacebar): " << spacebarHeld << endl;
-	ss << "Push/Pull (F): " << forceApplied << endl;
+	ss << "Push/Pull (F): " << pullForce << endl;
 	ss << "MouseZ+ (T): " << mouseZ << endl;
 	ss << "MouseZ- (G)" << endl;
 	ss << "Spawn Spheres (S)" << endl;
