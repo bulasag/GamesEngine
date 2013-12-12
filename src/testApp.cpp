@@ -87,7 +87,7 @@ void testApp::draw() {
 	ofSetLineWidth(1.f);
 	ofSetColor(255, 0, 200);
 	ofEnableLighting();
-	light.enable();
+	light.enable();	//Illuminate objects for visibility
 	if(modeToggled) {
 		ofSetColor(100, 100, 100);
 		for(int i = 0; i < bounds.size()-1; i++) {
@@ -108,12 +108,14 @@ void testApp::draw() {
 				ofSetColor(ofColor::gray);
 			}
 
+			//Highlight picked up objects
 			if(mousePickIndex == i)
 			{
 				ofSetColor(255, 0, 0);
 			}
 			else if (bColliding[i] == true)
 			{
+				//Highlight shapes when colliding with other shapes
 				if(shapes[i]->getType() == ofxBulletBaseShape::OFX_BULLET_BOX_SHAPE)
 				{
 					ofSetColor(ofColor::gold);
@@ -144,6 +146,7 @@ void testApp::draw() {
 }
 
 //--------------------------------------------------------------
+//Handle Bullet callback
 void testApp::onCollision(ofxBulletCollisionData &cdata) {
 	for(int j = 0; j < bounds.size(); j++) {
 		if(*bounds[j] == cdata) {
@@ -270,20 +273,29 @@ void testApp::mouseDragged(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button) {
-
+	ofVec3f mouseLoc = camera.screenToWorld( ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), 0) );
+	mouseLoc.z += 11;
+	ofVec3f shapeToCursorDistance;
+	for(int i = 0; i < shapes.size(); i++)
+	{
+		if(mousePickIndex == i)
+		{
+			shapeToCursorDistance = mouseLoc - shapes[i]->getPosition();
+			shapeToCursorDistance *= 2.f;
+		}
+	}
 }
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){
 	//Blast
-	ofVec3f blast = ofVec3f(0.f,0.f,20.f);
-	ofVec3f mousePos = ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), (float)mouseZ);
+	ofVec3f blast = ofVec3f(0.f,0.f,5000.f);
 
 	for(int i = 0; i < shapes.size(); i++)
 	{
 		if(mousePickIndex == i)
 		{
-			shapes[i]->applyForce(blast, mousePos);
+			shapes[i]->applyCentralForce(blast);
 		}
 	}
 
@@ -337,7 +349,7 @@ void testApp::setupBoundary()
 	ofVec3f startLoc;
 	ofPoint dimens;
 	boundsWidth = 40.;	//Inner Space
-	float hwidth = boundsWidth*.5;	//.5
+	float hwidth = boundsWidth*0.5;
 	float depth = 2.;	//Wall Thickness
 	float hdepth = depth*.5;
 
