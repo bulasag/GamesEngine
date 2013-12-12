@@ -24,7 +24,7 @@ void testApp::setup() {
 
 	int ii = 0;
 
-	//Create box to contain stuff
+	//Create box for containment
 	setupBoundary();
 
 	mousePickIndex	= -1;
@@ -55,7 +55,8 @@ void testApp::update() {
 		ofVec3f mouseLoc = camera.screenToWorld( ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), 0) );
 		mouseLoc.z += mouseZ;
 		ofVec3f shapeToCursorDistance;
-		for(int i = 0; i < shapes.size(); i++) {
+		for(int i = 0; i < shapes.size(); i++)
+		{
 			shapeToCursorDistance = mouseLoc - shapes[i]->getPosition();
 			shapeToCursorDistance *= 2.f;
 			if (!forceApplied) shapeToCursorDistance *= -1.f;
@@ -164,14 +165,14 @@ void testApp::keyPressed(int key) {
 	//BULLET OBJECTS STUFF
 	int ii = 0;
 	ofVec3f mouseLoc = camera.screenToWorld( ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), 0) );
-	float rsize = ofRandom(1.0, 2.0);
+	float randomSize = ofRandom(1.0, 2.0);
 	mouseLoc.z += mouseZ;
 
 	if(key == 'b')	//Spawn new Box
 	{
 		shapes.push_back( new ofxBulletBox() );
 		ii = shapes.size()-1;
-		((ofxBulletBox*)shapes[ii])->create(world.world, mouseLoc, rsize*.2, rsize*2, rsize*2, rsize*2);
+		((ofxBulletBox*)shapes[ii])->create(world.world, mouseLoc, randomSize*.2, randomSize*2, randomSize*2, randomSize*2);
 		shapes[ii]->setActivationState( DISABLE_DEACTIVATION );
 		shapes[ii]->add();
 		bColliding.push_back( false );
@@ -180,7 +181,7 @@ void testApp::keyPressed(int key) {
 	{
 		shapes.push_back( new ofxBulletSphere() );
 		ii = shapes.size()-1;
-		((ofxBulletSphere*)shapes[ii])->create(world.world, mouseLoc, rsize*.2, rsize);
+		((ofxBulletSphere*)shapes[ii])->create(world.world, mouseLoc, randomSize*.2, randomSize);
 		shapes[ii]->setActivationState( DISABLE_DEACTIVATION );
 		shapes[ii]->add();
 		bColliding.push_back( false );
@@ -213,7 +214,7 @@ void testApp::keyPressed(int key) {
 	}
 	if(key == 'q')	//KABOOM
 	{
-
+		mouseZ = 40;
 	}
 	
 
@@ -252,8 +253,7 @@ void testApp::mouseMoved(int x, int y) {
 
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button) {
-	//Keep track of changes during drag
-	//Accumulate them inside of curRot through multiplication
+	//Apply positional changes during drag, multiply to rotate
     ofVec2f mouse(x,y);  
     ofQuaternion yRot((x-lastMouse.x)*dampen, ofVec3f(0,1,0));  
     ofQuaternion xRot((y-lastMouse.y)*dampen, ofVec3f(-1,0,0));  
@@ -318,35 +318,35 @@ void testApp::setupBoundary()
 {
 	ofVec3f startLoc;
 	ofPoint dimens;
-	boundsWidth = 35.;
-	float hwidth = boundsWidth*.5;
-	float depth = 2.;
+	boundsWidth = 40.;	//Inner Space
+	float hwidth = boundsWidth*.5;	//.5
+	float depth = 2.;	//Wall Thickness
 	float hdepth = depth*.5;
 
 	for(int i = 0; i < 6; i++) {
 		bounds.push_back( new ofxBulletBox() );
-		if(i == 0) { // ground //
+		if(i == 0) { //Ground
 			startLoc.set( 0., hwidth+hdepth, 0. );
 			dimens.set(boundsWidth, depth, boundsWidth);
-		} else if (i == 1) { // back wall //
+		} else if (i == 1) { //Back Wall
 			startLoc.set(0, 0, hwidth+hdepth);
 			dimens.set(boundsWidth, boundsWidth, depth);
-		} else if (i == 2) { // right wall //
+		} else if (i == 2) { //Right Wall
 			startLoc.set(hwidth+hdepth, 0, 0.);
 			dimens.set(depth, boundsWidth, boundsWidth);
-		} else if (i == 3) { // left wall //
+		} else if (i == 3) { //Left Wall
 			startLoc.set(-hwidth-hdepth, 0, 0.);
 			dimens.set(depth, boundsWidth, boundsWidth);
-		} else if (i == 4) { // ceiling //
+		} else if (i == 4) { //Ceiling
 			startLoc.set(0, -hwidth-hdepth, 0.);
 			dimens.set(boundsWidth, depth, boundsWidth);
-		} else if (i == 5) { // front wall //
+		} else if (i == 5) { //Front Wall
 			startLoc.set(0, 0, -hwidth-hdepth);
 			dimens.set(boundsWidth, boundsWidth, depth);
 		}
 
 		bounds[i]->create( world.world, startLoc, 0., dimens.x, dimens.y, dimens.z );
-		bounds[i]->setProperties(.25, .95);
+		bounds[i]->setProperties(.25, .95);	//Restitution(Bounce) and Friction
 		bounds[i]->add();
 	}
 }
