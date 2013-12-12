@@ -59,7 +59,10 @@ void testApp::update() {
 		{
 			shapeToCursorDistance = mouseLoc - shapes[i]->getPosition();
 			shapeToCursorDistance *= 2.f;
-			if (!pullForce) shapeToCursorDistance *= -1.f;
+			if (!pullForce)
+			{
+			shapeToCursorDistance *= -1.f;
+			}
 			shapes[i]->applyCentralForce(shapeToCursorDistance);
 		}
 	}
@@ -273,17 +276,7 @@ void testApp::mouseDragged(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button) {
-	ofVec3f mouseLoc = camera.screenToWorld( ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), 0) );
-	mouseLoc.z += 11;
-	ofVec3f shapeToCursorDistance;
-	for(int i = 0; i < shapes.size(); i++)
-	{
-		if(mousePickIndex == i)
-		{
-			shapeToCursorDistance = mouseLoc - shapes[i]->getPosition();
-			shapeToCursorDistance *= 2.f;
-		}
-	}
+
 }
 
 //--------------------------------------------------------------
