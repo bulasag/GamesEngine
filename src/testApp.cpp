@@ -381,7 +381,7 @@ void testApp::setupTargets()
 {
 	int iii = 0;
 	ofVec3f spawnLoc = camera.screenToWorld( ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), 0) );
-	float targetSize = 2.0;
+	float targetSize = 4.0;
 	spawnLoc.z += 60;
 
 
