@@ -29,9 +29,11 @@ public:
 	ofxBulletWorldRigid			world;
 	vector <ofxBulletBox*>		bounds;
 	float						boundsWidth;
-	void setupBoundary();
-
 	
+	void						setupBoundary();
+	void						setupTargets();
+	vector<ofxBulletBaseShape*> targets;
+
 	ofLight						light;
 	
 	btBoxShape*					boxShape;

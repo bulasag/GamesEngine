@@ -24,7 +24,7 @@ void testApp::setup() {
 
 	int ii = 0;
 
-	//Create box for containment
+	//Create boundaries + targets
 	setupBoundary();
 
 	mousePickIndex	= -1;
@@ -90,7 +90,7 @@ void testApp::draw() {
 	ofSetLineWidth(1.f);
 	ofSetColor(255, 0, 200);
 	ofEnableLighting();
-	light.enable();	//Illuminate objects for visibility
+	light.enable();	//OOO GLOWY
 	if(modeToggled) {
 		ofSetColor(100, 100, 100);
 		for(int i = 0; i < bounds.size()-1; i++) {
@@ -129,6 +129,12 @@ void testApp::draw() {
 				}
 			}
 			shapes[i]->draw();
+		}
+
+		ofSetColor(ofColor::antiqueWhite);
+		for(int i = 0; i < targets.size(); i++)
+		{
+			targets[i]->draw();
 		}
 	}
 	light.disable();
@@ -216,7 +222,7 @@ void testApp::keyPressed(int key) {
 	}
 	if(key == 't')	//Move MouseZ away from camera
 	{
-		if (mouseZ < 40)
+		if (mouseZ < 70)
 		{
 			mouseZ += 10;
 		}
@@ -227,6 +233,10 @@ void testApp::keyPressed(int key) {
 		{
 			mouseZ -= 10;
 		}
+	}
+	if(key == 'q')	//Spawn targets
+	{
+		setupTargets();
 	}
 	
 
@@ -331,8 +341,10 @@ void testApp::userInterface()
 	ss << "MouseZ- (G)" << endl;
 	ss << "Spawn Spheres (S)" << endl;
 	ss << "Spawn Boxes (B)" << endl;
+	ss << "Spawn Targets (Q)" << endl;
 	ss << "Play (A)" << endl;
 	ss << "Resume/Pause (D)" << endl;
+	ss << ofGetMouseX() << " :XY: " << ofGetMouseY() << endl;
 	ofDrawBitmapString(ss.str().c_str(), 10, 10);
 }
 
@@ -341,29 +353,20 @@ void testApp::setupBoundary()
 {
 	ofVec3f startLoc;
 	ofPoint dimens;
-	boundsWidth = 40.;	//Inner Space
+	boundsWidth = 40.;
 	float hwidth = boundsWidth*0.5;
 	float depth = 4.;	//Wall Thickness
 	float hdepth = depth*.5;
 
-	for(int i = 0; i < 6; i++) {
+	for(int i = 0; i < 3; i++) {
 		bounds.push_back( new ofxBulletBox() );
 		if(i == 0) { //Ground
-			startLoc.set( 0., hwidth+hdepth, 0. );
-			dimens.set(boundsWidth, depth, boundsWidth*4);
+			startLoc.set( 0., hwidth+hdepth, 0.);
+			dimens.set(boundsWidth*10, depth, boundsWidth*4);
 		} else if (i == 1) { //Back Wall
 			startLoc.set(0, 0, (hwidth+hdepth)*4);
-			dimens.set(boundsWidth, boundsWidth, depth);
-		} else if (i == 2) { //Right Wall
-			startLoc.set(hwidth+hdepth, 0, 0.);
-			dimens.set(depth, boundsWidth, boundsWidth*4);
-		} else if (i == 3) { //Left Wall
-			startLoc.set(-hwidth-hdepth, 0, 0.);
-			dimens.set(depth, boundsWidth, boundsWidth*4);
-		} else if (i == 4) { //Ceiling
-			startLoc.set(0, -hwidth-hdepth, 0.);
-			dimens.set(boundsWidth, depth, boundsWidth*4);
-		} else if (i == 5) { //Front Wall
+			dimens.set(boundsWidth * 10, boundsWidth, depth * 3);
+		} else if (i == 2) { //Front Wall
 			startLoc.set(0, 0, -hwidth-hdepth);
 			dimens.set(boundsWidth, boundsWidth, depth);
 		}
@@ -374,3 +377,18 @@ void testApp::setupBoundary()
 	}
 }
 //--------------------------------------------------------------
+void testApp::setupTargets()
+{
+	int iii = 0;
+	ofVec3f spawnLoc = camera.screenToWorld( ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), 0) );
+	float targetSize = 2.0;
+	spawnLoc.z += 60;
+
+
+		targets.push_back(new ofxBulletBox());
+		iii = targets.size()-1;
+		((ofxBulletBox*)targets[iii])->create(world.world, spawnLoc, targetSize*.2, targetSize*2, targetSize*2, targetSize*2);
+		targets[iii]->setActivationState( DISABLE_DEACTIVATION );
+		targets[iii]->add();
+		bColliding.push_back( false );
+}
