@@ -49,7 +49,7 @@ void testApp::update() {
 		bColliding[i] = false;
 	}
 	
-	//Apply pull/push force
+	//Apply pull/push force to shapes
 	if(spacebarHeld) {
         mousePickIndex = -1;
 		ofVec3f mouseLoc = camera.screenToWorld( ofVec3f((float)ofGetMouseX(), (float)ofGetMouseY(), 0) );
@@ -157,12 +157,6 @@ void testApp::draw() {
 //--------------------------------------------------------------
 //Handle Bullet callback
 void testApp::onCollision(ofxBulletCollisionData &cdata) {
-	for(int j = 0; j < bounds.size(); j++) {
-		if(*bounds[j] == cdata) {
-			return;
-		}
-	}
-
 	for (int i = 0; i < shapes.size(); i++) {
 		if(*shapes[i] == cdata) {
 			bColliding[i] = true;
@@ -197,7 +191,7 @@ void testApp::keyPressed(int key) {
 		((ofxBulletBox*)shapes[ii])->create(world.world, mouseLoc, randomSize*.2, randomSize*2, randomSize*2, randomSize*2);
 		shapes[ii]->setActivationState( DISABLE_DEACTIVATION );
 		shapes[ii]->add();
-		bColliding.push_back( false );
+		bColliding.push_back(false);
 	}
 	if(key == 's')	//Spawn new Sphere
 	{
@@ -206,7 +200,7 @@ void testApp::keyPressed(int key) {
 		((ofxBulletSphere*)shapes[ii])->create(world.world, mouseLoc, randomSize*.2, randomSize);
 		shapes[ii]->setActivationState( DISABLE_DEACTIVATION );
 		shapes[ii]->add();
-		bColliding.push_back( false );
+		bColliding.push_back(false);
 	}
 	if(key == 'r')	//Toggle between the exhibits
 	{
@@ -384,11 +378,10 @@ void testApp::setupTargets()
 	float targetSize = 4.0;
 	spawnLoc.z += 60;
 
-
-		targets.push_back(new ofxBulletBox());
-		iii = targets.size()-1;
-		((ofxBulletBox*)targets[iii])->create(world.world, spawnLoc, targetSize*.2, targetSize*2, targetSize*2, targetSize*2);
-		targets[iii]->setActivationState( DISABLE_DEACTIVATION );
-		targets[iii]->add();
-		bColliding.push_back( false );
+	targets.push_back(new ofxBulletBox());
+	iii = targets.size()-1;
+	((ofxBulletBox*)targets[iii])->create(world.world, spawnLoc, targetSize*.2, targetSize*2, targetSize*2, targetSize*2);
+	targets[iii]->setActivationState( DISABLE_DEACTIVATION );
+	targets[iii]->add();
+	bColliding.push_back( false );
 }
