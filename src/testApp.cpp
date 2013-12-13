@@ -253,6 +253,22 @@ void testApp::keyPressed(int key) {
 			musicPaused = false;
 		}
 	}
+
+	if(key == 'p')
+	{
+		ofFileDialogResult openFileResult= ofSystemLoadDialog("Select a sound file");
+
+		//Check if the user opened a file
+		if (openFileResult.bSuccess){
+			
+			cout << "User selected a file \n";
+			
+			//We have a file, check it and process it
+			audioAnalyser.processOpenFileSelection(openFileResult);
+		}else{
+			cout << "User hit cancel \n";
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -338,7 +354,7 @@ void testApp::userInterface()
 	ss << "Spawn Targets (Q)" << endl;
 	ss << "Play (A)" << endl;
 	ss << "Resume/Pause (D)" << endl;
-	ss << ofGetMouseX() << " :XY: " << ofGetMouseY() << endl;
+	ss << "Select Song (P)" << endl;
 	ofDrawBitmapString(ss.str().c_str(), 10, 10);
 }
 
