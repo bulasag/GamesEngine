@@ -362,7 +362,7 @@ void testApp::setupBoundary()
 			dimens.set(boundsWidth * 10, boundsWidth, depth * 3);
 		} else if (i == 2) { //Front Wall
 			startLoc.set(0, 0, -hwidth-hdepth);
-			dimens.set(boundsWidth, boundsWidth, depth);
+			dimens.set(boundsWidth, boundsWidth, depth * 3);
 		}
 
 		bounds[i]->create( world.world, startLoc, 0., dimens.x, dimens.y, dimens.z );
